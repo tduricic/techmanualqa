@@ -1,0 +1,56 @@
+# ============================================================================
+# Secrets - CRITICAL
+# Never commit your environment file containing API keys.
+# ============================================================================
+.env
+
+
+# ============================================================================
+# Project-Specific Generated Data and Artifacts
+# These directories are created by your scripts and should not be tracked.
+# ============================================================================
+
+# This directory holds all downloaded PDFs and intermediate processed files
+# (Markdown pages, QA candidates, stats files, etc.).
+data/
+
+# This directory holds the final zipped archive ready for Zenodo upload.
+release/
+
+
+# ============================================================================
+# Python General
+# ============================================================================
+__pycache__/
+*.py[cod]
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+
+# ============================================================================
+# IDE / Editor & OS Files
+# ============================================================================
+
+# IDE - VSCode
+.vscode/
+
+# IDE - JetBrains (PyCharm)
+.idea/
+
+# OS - macOS
+.DS_Store
+
+# OS - Windows
+Thumbs.db
+
+
+# ============================================================================
+# Other
+# ============================================================================
+# Log files
+*.log
