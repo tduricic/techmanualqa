@@ -113,7 +113,7 @@ Run the parsing script for each PDF. This converts the PDF into a structured `.j
 
 ```bash
 # Example for one manual
-python src/01_parse_pdf.py data/pdfs/bosch_oven.pdf
+python src/parse_pdf.py data/pdfs/bosch_oven.pdf
 
 # Run this command for all 10 PDFs
 ```

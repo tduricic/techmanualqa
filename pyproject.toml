@@ -1,0 +1,54 @@
+[project]
+name = "techmanualqa"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "pymupdf4llm",
+  "pymupdf",
+  "pyyaml",
+  "python-dotenv",
+  "pandas",
+  "openpyxl",
+  "seaborn",
+  "scipy",
+  "matplotlib",
+  "google-generativeai",
+  "google-api-core>=2.19",
+  "scikit-learn",
+  "datasets>=2.18",
+  "sentence-transformers>=2.6",
+  "torch>=2.2",
+  "ragas>=0.2.0",
+  "openai>=1.0",
+  "pip-system-certs>=5.2",
+  "certifi>=2025.8.3",
+  "notebook>=7.4.7",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+allow-insecure-host = [
+  { host = "pypi.org" },
+  { host = "files.pythonhosted.org" }
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/techmanualqa"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.0.1",
+]
+
+[project.scripts]
+tech-parse-pdf = "techmanualqa.parse_pdf:main"
+tech-generate-candidates = "techmanualqa.generate_candidates:main"
+tech-prepare-audit-xlsx = "techmanualqa.prepare_audit_xlsx:main"
+tech-input-stats-plot = "techmanualqa.create_input_stats_plot:main"
+tech-filtering-table = "techmanualqa.create_filtering_table:main"
+tech-score-viz = "techmanualqa.create_score_visualization:main"
+tech-results-table = "techmanualqa.create_results_table:main"
+tech-zenodo-archive = "techmanualqa.create_zenodo_archive:main"

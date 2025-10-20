@@ -1,3 +1,4 @@
+# 02
 import os
 import csv
 import json
@@ -28,7 +29,7 @@ except ImportError as e:
     # --- Indented block for exception handling ---
     print(f"Error importing libraries: {e}")
     print("Please ensure prerequisites are installed:")
-    print("pip install PyYAML google-generativeai google-api-core openai sentence-transformers pandas scikit-learn datasets ragas python-dotenv") # Added PyYAML
+    print("pip install PyYAML google-generativeai google-api-core openai sentence-transformers pandas scikit-learn datasets ragas python-dotenv")
     sys.exit(1)
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(lineno)d: %(message)s')
@@ -38,7 +39,8 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(lineno)d: %(mess
 try:
     import yaml
     SCRIPT_DIR = Path(__file__).resolve().parent
-    CONFIG_PATH = SCRIPT_DIR.parent / "config" / "settings.yaml"
+    PROJECT_DIR = SCRIPT_DIR.parents[1]
+    CONFIG_PATH = PROJECT_DIR / "config" / "settings.yaml"
     logging.info(f"Loading configuration from: {CONFIG_PATH}")
     with open(CONFIG_PATH, 'r') as f:
         config = yaml.safe_load(f)
@@ -108,7 +110,7 @@ UNANSWERABLE_CATEGORY_NAME = "Unanswerable"
 SCHEMA = ["question_id", "persona", "doc_id", "language",
           "question_text", "category", "gt_answer_snippet",
           "gt_page_number", "_self_grounded"]
-FINAL_SCHEMA = SCHEMA + ['parsed_steps', 'passed_strict_check', 'corrected_steps', 'procedural_comments'] # Added corrected_steps and procedural_comments
+FINAL_SCHEMA = SCHEMA + ['parsed_steps', 'passed_strict_check', 'corrected_steps', 'procedural_comments']
 SENTINEL_ROWS_INFO = [ # Using 1 BAD Sentinel
     ({"question_id": "SENTINEL_BAD_01", "persona": "Technician", "doc_id": "N/A", "language": "fr",
       "question_text": "Explain about safety features thing?", "category": "Specification Lookup",
@@ -496,7 +498,7 @@ def deduplicate(df: pd.DataFrame, embedder: SentenceTransformer, threshold: floa
     print(f"Deduplication: Encoding {n_rows_before} questions using '{model_name_str}'...")
     embeddings = embedder.encode(questions, normalize_embeddings=True, show_progress_bar=True)
 
-    # --- ADDED: Calculate all pairwise similarity scores for stats ---
+    # --- Calculate all pairwise similarity scores for stats ---
     all_similarity_scores = []
     try:
         # This is the most efficient way to compute all pairwise similarities
@@ -661,7 +663,7 @@ def ragas_filter(df: pd.DataFrame, pages_data: List[Dict], threshold: float) -> 
         logging.warning("Ragas Filter: No scores returned. Skipping filter.")
         return df, [], []
 
-    # --- ADDED: Merge scores back into the main DataFrame ---
+    # --- Merge scores back into the main DataFrame ---
     scores_df = scores_df.fillna(0.0)
     faithfulness_scores_list = scores_df['faithfulness'].tolist()
     correctness_scores_list = scores_df['answer_correctness'].tolist()
@@ -789,7 +791,7 @@ def judge_filter(df: pd.DataFrame, pages_data: List[Dict], judge_model_name: str
             logging.error(f"Judge Filter error QID {row.get('question_id')}: {e}", exc_info=True)
             scores[index] = 1
 
-    # --- ADDED: Add scores to DataFrame and prepare for stats ---
+    # --- Add scores to DataFrame and prepare for stats ---
     # Create a pandas Series from the scores dictionary
     scores_series = pd.Series(scores)
     # Map the scores to a new column in the DataFrame

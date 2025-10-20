@@ -54,3 +54,8 @@ Thumbs.db
 # ============================================================================
 # Log files
 *.log
+
+files.json
+notebooks/
+project_tree.txt
+snapshot_project.py

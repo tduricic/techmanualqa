@@ -1,3 +1,4 @@
+# 01
 import pymupdf4llm
 import sys
 import yaml
@@ -179,49 +180,100 @@ def process_single_pdf(pdf_path: Path, base_output_dir: Path, export_images: boo
         return False
 
 
-# --- Main execution block ---
-if __name__ == "__main__":
-    # Setup argument parser
+def _output_exists_for(pdf_path: Path, base_output_dir: Path) -> bool:
+    stem = pdf_path.stem
+    jsonl = base_output_dir / stem / f"{stem}_pages.jsonl"
+    return jsonl.exists()
+
+
+def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="Processes a single PDF to extract markdown, images, and metadata.",
+        description=(
+            "Process PDFs into per-page Markdown (JSONL) and optional page images.\n\n"
+            "Single-file mode:\n"
+            "  parse_pdf.py <pdf_filename> [--no-images]\n\n"
+            "Bulk mode:\n"
+            "  parse_pdf.py --all [--pattern '*.pdf'] [--recurse] [--overwrite] [--no-images]"
+        ),
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument(
-        "pdf_filename",
-        help=f"The filename of the PDF to process, located in the '{PDF_DIR}' directory."
-    )
-    parser.add_argument(
-        "--no-images",
-        action="store_true",
-        help="Disables the export of page images, overriding the config setting."
-    )
-    args = parser.parse_args()
+    # Modes
+    parser.add_argument("pdf_filename", nargs="?", help=f"Filename inside '{PDF_DIR}' to process (single-file mode).")
+    parser.add_argument("--all", action="store_true", help="Process all PDFs from the configured pdf_directory.")
+    # Discovery options
+    parser.add_argument("--pattern", default="*.pdf", help="Glob for selecting PDFs (default: *.pdf).")
+    parser.add_argument("--recurse", action="store_true", help="Recurse into subdirectories of pdf_directory.")
+    # Behavior toggles
+    parser.add_argument("--overwrite", action="store_true", help="Re-process even if output already exists.")
+    parser.add_argument("--no-images", action="store_true", help="Disable image export (overrides config).")
 
-    # Determine if images should be exported
+    args = parser.parse_args(argv)
     export_images_enabled = EXPORT_IMAGES and not args.no_images
 
-    pdf_full_path = PDF_DIR / args.pdf_filename
+    # ---- Single-file mode
+    if args.pdf_filename and not args.all:
+        pdf_full_path = PDF_DIR / args.pdf_filename
+        logging.info(f"--- Starting PDF processing for: {pdf_full_path} ---")
+        ok = process_single_pdf(pdf_full_path, PROCESSED_DATA_DIR, export_images=export_images_enabled)
+        if ok:
+            # Preview first lines
+            stem = pdf_full_path.stem
+            output_jsonl = PROCESSED_DATA_DIR / stem / f"{stem}_pages.jsonl"
+            try:
+                with open(output_jsonl, 'r', encoding='utf-8') as f:
+                    print(f"\n--- First 3 lines of output file ({output_jsonl.name}) ---")
+                    for i, line in enumerate(f):
+                        if i >= 3:
+                            break
+                        print(line.strip()[:200] + ("..." if len(line) > 200 else ""))
+                    print("--------------------------------------------------")
+            except FileNotFoundError:
+                logging.warning(f"Could not read output file {output_jsonl} for verification.")
+            return 0
+        else:
+            logging.error("--- PDF processing failed. See logs for details. ---")
+            return 1
 
-    logging.info(f"--- Starting PDF processing for: {pdf_full_path} ---")
+    # ---- Bulk mode
+    if args.all:
+        if args.recurse:
+            candidates = sorted(PDF_DIR.rglob(args.pattern))
+        else:
+            candidates = sorted(PDF_DIR.glob(args.pattern))
 
-    success = process_single_pdf(pdf_full_path, PROCESSED_DATA_DIR, export_images=export_images_enabled)
+        if not candidates:
+            logging.warning(f"No PDFs matched pattern '{args.pattern}' in {PDF_DIR} (recurse={args.recurse}).")
+            return 0
 
-    if success:
-        logging.info("--- PDF processing finished successfully. ---")
-        # Verify output by showing the first few lines of the JSONL file
-        stem = pdf_full_path.stem
-        output_jsonl = PROCESSED_DATA_DIR / stem / f"{stem}_pages.jsonl"
-        try:
-            with open(output_jsonl, 'r', encoding='utf-8') as f:
-                print(f"\n--- First 3 lines of output file ({output_jsonl.name}) ---")
-                for i, line in enumerate(f):
-                    if i >= 3:
-                        break
-                    # Truncate long lines for cleaner preview
-                    print(line.strip()[:200] + ("..." if len(line) > 200 else ""))
-                print("--------------------------------------------------")
-        except FileNotFoundError:
-            logging.warning(f"Could not read output file {output_jsonl} for verification.")
-    else:
-        logging.error("--- PDF processing failed. See logs for details. ---")
-        sys.exit(1)
+        logging.info(
+            f"Bulk processing: found {len(candidates)} file(s) in {PDF_DIR} "
+            f"(pattern='{args.pattern}', recurse={args.recurse}, images={export_images_enabled})."
+        )
+
+        processed = skipped = failed = 0
+        for pdf_path in candidates:
+            if not args.overwrite and _output_exists_for(pdf_path, PROCESSED_DATA_DIR):
+                logging.info(f"Skipping (already processed): {pdf_path.name}")
+                skipped += 1
+                continue
+
+            logging.info(f"Processing: {pdf_path.name}")
+            ok = process_single_pdf(pdf_path, PROCESSED_DATA_DIR, export_images=export_images_enabled)
+            if ok:
+                processed += 1
+            else:
+                failed += 1
+
+        logging.info(
+            f"Bulk summary → processed: {processed}, skipped: {skipped}, failed: {failed} "
+            f"(directory={PDF_DIR}, pattern='{args.pattern}', recurse={args.recurse})"
+        )
+        # Non-zero exit if any failures occurred (useful in CI)
+        return 0 if failed == 0 else 2
+
+    # If we reach here, the user provided neither a filename nor --all
+    parser.error("Provide a <pdf_filename> for single-file mode, or use --all for bulk mode.")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
