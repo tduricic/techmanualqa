@@ -17,9 +17,9 @@ data/
 release/
 
 # Generated paper artifacts (figures, tables, benchmarks)
+!paper_artifacts/figures/graphical_abstract.png  # Exception: Keep this for README
 paper_artifacts/figures/*.png
 paper_artifacts/figures/*.pdf
-!paper_artifacts/figures/graphical_abstract.png  # Exception: Keep this for README
 paper_artifacts/tables/*.tex
 paper_artifacts/tables/*.json
 paper_artifacts/*.csv
