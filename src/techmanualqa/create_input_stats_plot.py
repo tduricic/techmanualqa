@@ -74,6 +74,9 @@ def create_plot(df: pd.DataFrame, output_path: Path):
         logging.error("Cannot create plot, no data was loaded.")
         return
 
+    # Ensure the output directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     sns.set_theme(style="whitegrid")
     sns.set_context("paper", font_scale=1.4)
 

@@ -94,7 +94,7 @@ def create_plots(scores: dict, output_path: Path):
 def main():
     """Main function to orchestrate the visualization generation."""
     parser = argparse.ArgumentParser(description="Generate visualizations of quality scores from stats files.")
-    parser.add_argument("--processed-dir", default="local_data/processed",
+    parser.add_argument("--processed-dir", default="data/processed",
                         help="Directory containing processed document subfolders with stats files.")
     parser.add_argument("--output-file", default="paper_artifacts/figures/score_distributions.png",
                         help="Path to save the final visualization image.")

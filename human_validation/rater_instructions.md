@@ -14,9 +14,9 @@ You will be provided with two CSV files:
 
 Your task is to:
 1.  Open your assigned CSV file(s).
-2.  For **each row**, review the provided information (`question_id`, `question_text`, `gt_answer_snippet`, `gt_page_number`, `category`, `persona`).
+2.  For **each row**, review the provided information (`question_id`, `question_text`, `gt_answer_snippet`, `gt_page_number`).
 3.  You will need to **compare the `gt_answer_snippet` against the content of the original manual on the specified `gt_page_number`**. (See Section 3 below).
-4.  Fill in the **last five columns** (`answer_correct?`, `grounded?`, `question_clear?`, `category_correct?`, `persona_tone_ok?`) with **"Yes"** or **"No"**. Case doesn't matter (yes/no, Yes/No are all fine). Please only use these two words.
+4.  Fill in the **last five columns** (`answer_correct?`, `grounded?`, `question_clear?`) with **"Yes"** or **"No"**. Case doesn't matter (yes/no, Yes/No are all fine). Please only use these two words.
 5.  **Save** the CSV file(s) once you have rated all rows.
 6.  Notify the coordinator (or press Enter in the script if you are running it) once **both** files are saved.
 
@@ -68,30 +68,6 @@ Please apply these definitions consistently:
     * *Example No:* "How adjust setting it?" (Grammar)
     * *Example No:* "Tell me about the main feature." (Vague)
     * *Example No:* "Does it work with it?" (Ambiguous pronoun)
-
-**d) `category_correct?` (Yes/No)**
-* **Definition:** Is the assigned `category` the single best fit for the `question_text` based on the category definitions below?
-    * **Specification Lookup:** Asks for specific quantitative or qualitative properties, technical data, capacities, dimensions, ratings, error codes, model numbers, or standards mentioned.
-    * **Tool/Material Identification:** Asks to identify required tools, parts, materials, consumables, software, or specific chemical agents needed or mentioned.
-    * **Procedural Step Inquiry:** Asks how to perform a task involving multiple steps (e.g., "How do I install X?", "What are the steps to clean Y?").
-    * **Location/Definition:** Asks *where* a physical component/control is located OR *what* a specific term, symbol, indicator, message, or menu option *means* or *does*.
-    * **Conditional Logic/Causal Reasoning:** Asks about situations dependent on specific conditions ('What if...?', 'When should I...?'), prerequisites, or cause/effect ('Why did...?', 'What happens if...?').
-    * **Safety Information Lookup:** Asks about potential hazards, safety precautions, warnings, PPE, risks, emergency procedures, or safe disposal.
-    * **Unanswerable:** Asks a plausible question, but the answer cannot be found in the manual.
-* **Rate Yes if:** The assigned category accurately reflects the question's primary intent.
-* **Rate No if:** A different category would be a significantly better fit.
-    * *Example No:* Q: "How do I clean the filter?" Category: `Location/Definition` (Should be `Procedural Step Inquiry`)
-    * *Example No:* Q: "What does error E-05 mean?" Category: `Safety Information Lookup` (Should be `Specification Lookup` or maybe `Location/Definition`)
-
-**e) `persona_tone_ok?` (Yes/No)**
-* **Definition:** Does the `question_text`'s wording, complexity, and focus reasonably align with the assigned `persona` based on the style hints below?
-    * **Novice User:** simple wording, asks basic “what/where” questions
-    * **Technician:** uses precise technical jargon, asks detailed procedural/spec questions
-    * **SafetyOfficer:** asks about/emphasises risks, warnings, and protective measures
-* **Rate Yes if:** The style generally fits the persona. It doesn't have to be a perfect caricature.
-* **Rate No if:** There is a clear mismatch (e.g., extremely technical jargon for a Novice, overly simplistic question for a Technician, a safety question not assigned to SafetyOfficer when it clearly fits).
-    * *Example No:* Persona: `Novice User`, Question: "What is the nominal impedance curve under phased harmonic load?"
-    * *Example No:* Persona: `Technician`, Question: "Where is the on button?" (Could be Yes if context implies difficulty finding it, but generally too simple).
 
 ## 5. Handling Uncertainty
 

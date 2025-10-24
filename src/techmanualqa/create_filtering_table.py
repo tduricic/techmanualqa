@@ -71,7 +71,7 @@ def main():
     Main function to find stats files, calculate averages, and generate the LaTeX table.
     """
     parser = argparse.ArgumentParser(description="Process stats files and generate a filtering summary table.")
-    parser.add_argument("--processed-dir", default="local_data/processed",
+    parser.add_argument("--processed-dir", default="data/processed",
                         help="Directory containing processed document subfolders.")
     parser.add_argument("--output-file", default="paper_artifacts/tables/filtering_stats_table.tex",
                         help="Path to save the final .tex file.")
@@ -120,7 +120,6 @@ def main():
     df_stats = pd.DataFrame(all_stats_data)
     average_stats = df_stats.mean()
 
-    # --- ENHANCEMENT: Save the raw summary data to a JSON file ---
     # Derive the JSON filename from the TeX output filename
     output_json_path = output_tex_path.with_suffix('.json')
     try:
@@ -128,7 +127,6 @@ def main():
         logging.info(f"Machine-readable summary data saved to: {output_json_path}")
     except Exception as e:
         logging.error(f"Failed to save summary JSON file: {e}")
-    # --- End of Enhancement ---
 
     # Create the LaTeX table using the calculated averages
     create_latex_table(average_stats, output_tex_path)

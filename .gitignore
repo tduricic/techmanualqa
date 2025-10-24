@@ -4,7 +4,6 @@
 # ============================================================================
 .env
 
-
 # ============================================================================
 # Project-Specific Generated Data and Artifacts
 # These directories are created by your scripts and should not be tracked.
@@ -17,20 +16,57 @@ data/
 # This directory holds the final zipped archive ready for Zenodo upload.
 release/
 
+# Generated paper artifacts (figures, tables, benchmarks)
+paper_artifacts/figures/*.png
+paper_artifacts/figures/*.pdf
+!paper_artifacts/figures/graphical_abstract.png  # Exception: Keep this for README
+paper_artifacts/tables/*.tex
+paper_artifacts/tables/*.json
+paper_artifacts/*.csv
+
+# Human validation audit sheets with annotations
+human_validation/audit_sheets/*.xlsx
+
+# Keep the directory structure and instructions
+!human_validation/audit_sheets/.gitkeep
+!human_validation/rater_instructions.md
 
 # ============================================================================
 # Python General
 # ============================================================================
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
 *.egg-info/
 pip-wheel-metadata/
+.Python
 
 # Virtual Environments
 venv/
 env/
 .venv/
+ENV/
+env.bak/
+venv.bak/
 
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
 
 # ============================================================================
 # IDE / Editor & OS Files
@@ -38,24 +74,87 @@ env/
 
 # IDE - VSCode
 .vscode/
+*.code-workspace
 
 # IDE - JetBrains (PyCharm)
 .idea/
+*.iml
+*.iws
+
+# IDE - Sublime Text
+*.sublime-project
+*.sublime-workspace
 
 # OS - macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
 
 # OS - Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
 
+# OS - Linux
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# Jupyter Notebooks
+# ============================================================================
+.ipynb_checkpoints/
+notebooks/*.ipynb
+notebooks/*-checkpoint.ipynb
 
 # ============================================================================
 # Other
 # ============================================================================
+
 # Log files
 *.log
+logs/
 
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed files (except intentional releases)
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Project-specific temp files
 files.json
-notebooks/
 project_tree.txt
 snapshot_project.py
+
+# Config files with potentially sensitive data
+# (Users should copy settings.yaml.example to settings.yaml)
+config/settings.yaml
+
+# Optional: UV lock file (uncomment if you don't want to track it)
+# uv.lock
+
+# MyPy cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff cache
+.ruff_cache/

@@ -154,7 +154,6 @@ def main():
         dist, kappa = get_dist_and_kappa(df_proc_a, df_proc_b, question, choices)
         if dist is not None: procedural_results[question] = {'dist': dist, 'kappa': kappa}
 
-    # --- ENHANCEMENT: Save summary data to JSON ---
     summary_data = {
         "general_audit_results": general_results,
         "procedural_audit_results": procedural_results

@@ -13,17 +13,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def write_readme(output_dir: Path):
     """Creates the README.md file with dataset description."""
     readme_content = """
-# TechManualQA-350 Dataset
+# TechManualQA-700 Dataset
 
-This archive contains the data artifacts for the CIKM 2025 paper: "A Semi-Automated Pipeline for Generating Grounded, Structurally-Aware QA Datasets for Technical Manuals".
+This archive contains the data artifacts for the ECIR 2026 paper: "A Semi-Automated Pipeline for Generating Grounded, Structurally-Aware QA Datasets for Technical Manuals".
 
 ## Contents
 
-- `TechManualQA_350.jsonl`: The complete benchmark dataset containing 350 question-answering pairs from 10 technical manuals. Each line is a JSON object.
+- `TechManualQA_700.jsonl`: The complete benchmark dataset containing 700 question-answering pairs from 10 technical manuals. Each line is a JSON object.
 - `human_annotation/`: A directory containing the raw, filled-out Excel files from our two annotators (A and B) for both the general and procedural audit tasks. This data is provided for full reproducibility of our inter-rater reliability analysis.
 - `LICENSE`: The license for this dataset (CC BY 4.0).
 
-## Data Schema for `TechManualQA_350.jsonl`
+## Data Schema for `TechManualQA_700.jsonl`
 
 Each JSON object in the main dataset file contains the following keys:
 - `question_id`: A unique identifier for the question.
@@ -65,11 +65,11 @@ def main():
     and package everything into a Zenodo-ready zip file.
     """
     parser = argparse.ArgumentParser(description="Create a Zenodo-ready archive for the TechManualQA dataset.")
-    parser.add_argument("--processed-dir", default="local_data/processed",
+    parser.add_argument("--processed-dir", default="data/processed",
                         help="Directory containing the candidate JSONL files.")
     parser.add_argument("--audit-dir", default="human_validation/audit_sheets",
                         help="Directory containing the filled-out audit Excel files.")
-    parser.add_argument("--output-name", default="TechManualQA_350",
+    parser.add_argument("--output-name", default="TechManualQA_700",
                         help="The base name for the output directory and zip file.")
     args = parser.parse_args()
 
@@ -77,8 +77,8 @@ def main():
     processed_dir = Path(args.processed_dir)
     audit_dir = Path(args.audit_dir)
     release_dir = Path("release")  # All final outputs will go here
-    output_dir = release_dir / args.output_name  # e.g., release/TechManualQA_350/
-    zip_path_base = release_dir / args.output_name  # e.g., release/TechManualQA_350 (for zip)
+    output_dir = release_dir / args.output_name  # e.g., release/TechManualQA_700/
+    zip_path_base = release_dir / args.output_name  # e.g., release/TechManualQA_700 (for zip)
 
     # --- Step 1: Create the output directory structure ---
     if output_dir.exists():

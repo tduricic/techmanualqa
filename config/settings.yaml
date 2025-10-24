@@ -7,7 +7,7 @@ paths:
   page_images_subdir:  "page_imgs"            # PNGs rendered from pages
 
 options:
-  export_images: true        # save PNGs while parsing
+  export_images: false        # save PNGs while parsing
   image_scale:   2.0         # 1 = native DPI, 2 ≈ 300 dpi
 
 qc_thresholds:
@@ -26,9 +26,21 @@ pipeline:
 
 models:
   embed: "sentence-transformers/all-MiniLM-L6-v2"
-  generation: "gemini-2.5-pro-exp-03-25"
-  step_parsing: "gemini-2.5-flash-preview-04-17"
-  judge: "gpt-4.1"
+
+  generation:
+    backend: "google"  # google | openai | litellm
+    model_name: "gemini-2.5-pro"
+    temperature: 0.8
+
+  step_parsing:
+    backend: "google"  # google | openai | litellm
+    model_name: "gemini-2.5-flash"
+    temperature: 0.0
+
+  judge:
+    backend: "openai"  # google | openai | litellm
+    model_name: "gpt-4.1"
+    temperature: 0.0
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. Quotas per manual  (35 rows total)
@@ -58,7 +70,7 @@ audit:
 # ─────────────────────────────────────────────────────────────────────────────
 files:
   # Path relative to the main project directory (where config/ and src/ reside)
-  master_prompt: "master_prompt.txt"
+  master_prompt: "prompts/master_prompt.txt"
   # Suffixes for generated files (relative to input file location)
   raw_output_suffix: "_raw_output.txt"
   candidate_suffix: "_candidates.pkl"
